@@ -5,8 +5,9 @@
   <Folder Name="/Itens de Solução/SQL/">
     <File Path="script.sql" />
   </Folder>
-  <Project Path="CrossCutting/CrossCutting.csproj" />
-  <Project Path="Domain/Domain.csproj" />
-  <Project Path="Infraestructure/Infraestructure.csproj" />
-  <Project Path="WebApplication/WebApplication.csproj" />
+  <Project Path="Application/Application.csproj" Id="1f2d3b69-8d8a-4a97-a2b4-fa0f57f3cc85" />
+  <Project Path="CrossCutting/CrossCutting.csproj" Id="07ddd064-1321-4880-8e31-30189c2003b2" />
+  <Project Path="Domain/Domain.csproj" Id="8a994cd7-8d2e-4b51-9628-99331522e161" />
+  <Project Path="Infraestructure/Infraestructure.csproj" Id="56496796-e805-4d22-9cd8-0b7e5a09754c" />
+  <Project Path="WebApplication/WebApplication.csproj" Id="9748dd34-1dfb-45de-b766-5cbe717f60a0" />
 </Solution>

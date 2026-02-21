@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Domain.Entities.Atendimento>
+
+@{
+    ViewBag.Title = "Histórico de Atendimentos";
+}
+
+<h2>Histórico Geral de Atendimentos</h2>
+<p>
+    @Html.ActionLink("Registrar Novo Atendimento", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Data de Entrada</th>
+            <th>Nome do Paciente</th>
+            <th>CPF</th>
+            <th>Status</th>
+            <th>Pressão</th>
+            <th>Temp.</th>
+            <th>BPM</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DataEntrada.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Paciente.Nome</td>
+                <td>@item.Paciente.Cpf</td>
+                <td>
+                    @if (item.StatusAtendimento == "Ativo")
+                    {
+                        <span class="badge bg-warning text-dark">@item.StatusAtendimento</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@item.StatusAtendimento</span>
+                    }
+                </td>
+                <td>@item.PressaoArterial</td>
+                <td>@item.Temperatura</td>
+                <td>@item.FrequenciaCardiaca</td>
+            </tr>
+        }
+    </tbody>
+</table>

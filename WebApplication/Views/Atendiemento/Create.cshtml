@@ -1,0 +1,53 @@
+﻿@model Domain.Entities.Atendimento
+
+@{
+    ViewBag.Title = "Novo Atendimento";
+}
+
+<h2>Registrar Atendimento Médico</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.PacienteId, "Paciente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("PacienteId", null, "Selecione um Paciente...", htmlAttributes: new { @class = "form-control", required = "required" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.PressaoArterial, "Pressão Arterial", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.PressaoArterial, new { htmlAttributes = new { @class = "form-control", placeholder = "Ex: 120/80" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.Temperatura, "Temperatura (°C)", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Temperatura, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.1" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.FrequenciaCardiaca, "Freq. Cardíaca (BPM)", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.FrequenciaCardiaca, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Registrar Entrada" class="btn btn-success" />
+                @Html.ActionLink("Ver Histórico", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}

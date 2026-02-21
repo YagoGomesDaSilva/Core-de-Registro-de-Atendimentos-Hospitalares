@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using WebApplication.Services.Interfaces;
+using Application.Services.Interfaces;
+using Domain.Entities;
+using Domain.Exceptions;
+using Domain.Interfaces;
 
-namespace WebApplication.Services
+namespace Application.Services
 {
     public class AtendimentoService : IAtendimentoService
     {

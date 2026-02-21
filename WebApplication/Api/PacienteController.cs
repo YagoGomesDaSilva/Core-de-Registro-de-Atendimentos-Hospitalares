@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace WebApplication.Api
 {
-    public class ValuesController : ApiController
+    public class PacienteController : ApiController
     {
         // GET api/values
         public IEnumerable<string> Get()
