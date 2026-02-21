@@ -1,0 +1,16 @@
+﻿using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Interfaces
+{
+    public interface IAtendimentoRepository
+    {
+        void Adicionar(Atendimento atendimento);
+        IEnumerable<Atendimento> ObterHistoricoCompleto();
+        IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId);
+    }
+}

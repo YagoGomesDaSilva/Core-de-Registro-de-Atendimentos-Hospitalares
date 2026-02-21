@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path="Docker-Compose.yml" />
+  </Folder>
+  <Folder Name="/Itens de Solução/SQL/">
+    <File Path="script.sql" />
+  </Folder>
   <Project Path="CrossCutting/CrossCutting.csproj" />
   <Project Path="Domain/Domain.csproj" />
   <Project Path="Infraestructure/Infraestructure.csproj" />
