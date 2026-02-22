@@ -192,12 +192,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Views\Paciente\Create.cshtml" />
-    <Content Include="Views\Atendiemento\Create.cshtml" />
-    <Content Include="Views\Atendiemento\Index.cshtml" />
+    <Content Include="Views\Atendimento\Create.cshtml" />
+    <Content Include="Views\Atendimento\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Atendimento\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
