@@ -56,13 +56,13 @@ namespace WebApplication.Api
 
             try
             {
-                _atendimentoService.RegistrarAtendimento(atendimento);
-                return Ok(atendimento);
+                var resultado = _atendimentoService.RegistrarAtendimento(atendimento);
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }            
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public void RegistrarAtendimento(AtendimentoDTO atendimento)
+        public AtendimentoDTO RegistrarAtendimento(AtendimentoDTO atendimento)
         {
             // Busca todos os atendimentos prévios deste paciente
             var atendimentosDoPaciente = _atendimentoRepository.ObterAtendimentosPorPaciente(atendimento.PacienteId);
@@ -31,9 +31,7 @@ namespace Application.Services
             bool possuiAtendimentoAtivo = atendimentosDoPaciente.Any(a => a.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase));
 
             if (possuiAtendimentoAtivo)
-            {
                 throw new DomainException("Impossível registrar: O paciente já possui um atendimento com status 'Ativo'. Finalize o atendimento atual antes de abrir um novo.");
-            }
 
             // Garante que o status inicial e a data estejam corretos
             atendimento.StatusAtendimento = "Ativo";
@@ -41,11 +39,13 @@ namespace Application.Services
 
             var entity = _mapper.Map<Atendimento>(atendimento);
             _atendimentoRepository.Adicionar(entity);
+
+            return _mapper.Map<AtendimentoDTO>(entity); 
         }
 
         public IEnumerable<AtendimentoDTO> ObterHistorico()
         {
-            var atendimentos = _atendimentoRepository.ObterHistoricoCompleto();
+            var atendimentos = _atendimentoRepository.ObterHistorico();
             return _mapper.Map<IEnumerable<AtendimentoDTO>>(atendimentos);
         }
     }

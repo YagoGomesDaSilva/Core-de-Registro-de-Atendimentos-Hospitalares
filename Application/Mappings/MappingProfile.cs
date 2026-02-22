@@ -8,7 +8,10 @@ namespace Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Paciente, PacienteDTO>().ReverseMap();
+            CreateMap<Paciente, PacienteDTO>()
+                .ReverseMap();
+                //.ForMember(dest => dest.DataRegisto, opt => opt.Ignore());
+
             CreateMap<Atendimento, AtendimentoDTO>().ReverseMap();
         }
     }

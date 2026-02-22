@@ -22,25 +22,23 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public void Adicionar(PacienteDTO paciente)
+        public PacienteDTO Adicionar(PacienteDTO paciente)
         {
             // Limpa a formatação do CPF para garantir apenas números
             paciente.Cpf = paciente.Cpf?.Replace(".", "").Replace("-", "").Trim();
 
             if (!CpfEhValido(paciente.Cpf))
-            {
                 throw new DomainException("O CPF informado possui um formato ou dígito verificador inválido.");
-            }
 
             // Regra extra implícita: não permitir CPF duplicado
             var cpfJaExiste = _pacienteRepository.ObterTodos().Any(p => p.Cpf == paciente.Cpf);
             if (cpfJaExiste)
-            {
                 throw new DomainException("Já existe um paciente cadastrado com este CPF.");
-            }
 
             var entity = _mapper.Map<Paciente>(paciente);
             _pacienteRepository.Adicionar(entity);
+
+            return _mapper.Map<PacienteDTO>(entity); 
         }
 
         public IEnumerable<PacienteDTO> ObterTodos()

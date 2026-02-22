@@ -27,7 +27,7 @@ namespace Infrastructure.Repositories
 
         public Paciente ObterPorId(int id)
         {
-            return _context.Pacientes.Find(id);
+            return _context.Pacientes.Include("Atendimentos").FirstOrDefault(p => p.Id == id);
         }
 
         public IEnumerable<Paciente> ObterTodos()

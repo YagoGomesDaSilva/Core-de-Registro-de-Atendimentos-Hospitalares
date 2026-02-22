@@ -10,7 +10,7 @@ namespace Domain.Interfaces
     public interface IAtendimentoRepository
     {
         void Adicionar(Atendimento atendimento);
-        IEnumerable<Atendimento> ObterHistoricoCompleto();
+        IEnumerable<Atendimento> ObterHistorico();
         IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId);
     }
 }

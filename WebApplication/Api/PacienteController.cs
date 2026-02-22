@@ -57,8 +57,8 @@ namespace WebApplication.Api
 
             try
             {
-                _pacienteService.Adicionar(paciente);
-                return Ok(paciente);
+                var resultado = _pacienteService.Adicionar(paciente);
+                return Ok(resultado);
             }
             catch (Exception ex)
             {

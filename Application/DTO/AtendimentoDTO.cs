@@ -10,7 +10,7 @@ namespace Application.DTO
     {
         public int Id { get; set; }
         public int PacienteId { get; set; }
-        public DateTime DataEntrada { get; set; }
+        public DateTime DataEntrada { get; set; } = DateTime.Now;
         public string StatusAtendimento { get; set; }
         public string PressaoArterial { get; set; }
         public decimal? Temperatura { get; set; }

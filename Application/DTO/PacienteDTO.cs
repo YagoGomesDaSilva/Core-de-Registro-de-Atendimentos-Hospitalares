@@ -12,7 +12,7 @@ namespace Application.DTO
         public string Nome { get; set; }
         public string Cpf { get; set; }
         public DateTime DataNascimento { get; set; }
-        public DateTime DataRegisto { get; set; }
+        public DateTime DataRegisto { get; set; } = DateTime.Now;
         public ICollection<AtendimentoDTO> Atendimentos { get; set; }
     }
 }

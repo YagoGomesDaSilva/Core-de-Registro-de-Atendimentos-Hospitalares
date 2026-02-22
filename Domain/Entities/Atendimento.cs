@@ -10,8 +10,8 @@ namespace Domain.Entities
     {
         public int Id { get; set; }
         public int PacienteId { get; set; }
-        public DateTime DataEntrada { get; set; }
-        public string StatusAtendimento { get; set; }
+        public DateTime DataEntrada { get; set; } = DateTime.Now;
+        public string StatusAtendimento { get; set; } = "Ativo";
         public string PressaoArterial { get; set; }
         public decimal? Temperatura { get; set; }
         public int? FrequenciaCardiaca { get; set; }

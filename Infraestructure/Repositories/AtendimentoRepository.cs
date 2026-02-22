@@ -25,10 +25,9 @@ namespace Infrastructure.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<Atendimento> ObterHistoricoCompleto()
+        public IEnumerable<Atendimento> ObterHistorico()
         {
-            // O .Include gera um INNER JOIN no banco de dados para trazer os dados do Paciente
-            return _context.Atendimentos.Include("Paciente").ToList();
+            return _context.Atendimentos.ToList();
         }
 
         public IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId)
