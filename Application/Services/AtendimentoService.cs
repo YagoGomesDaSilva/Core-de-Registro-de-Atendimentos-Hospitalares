@@ -1,24 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Application.DTO;
 using Application.Services.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace Application.Services
 {
     public class AtendimentoService : IAtendimentoService
     {
         private readonly IAtendimentoRepository _atendimentoRepository;
+        private readonly IMapper _mapper;
 
-        public AtendimentoService(IAtendimentoRepository atendimentoRepository)
+        public AtendimentoService(IAtendimentoRepository atendimentoRepository, IMapper mapper)
         {
             _atendimentoRepository = atendimentoRepository;
+            _mapper = mapper;
         }
 
-        public void RegistrarAtendimento(Atendimento atendimento)
+        public void RegistrarAtendimento(AtendimentoDTO atendimento)
         {
             // Busca todos os atendimentos prévios deste paciente
             var atendimentosDoPaciente = _atendimentoRepository.ObterAtendimentosPorPaciente(atendimento.PacienteId);
@@ -35,12 +39,14 @@ namespace Application.Services
             atendimento.StatusAtendimento = "Ativo";
             atendimento.DataEntrada = DateTime.Now;
 
-            _atendimentoRepository.Adicionar(atendimento);
+            var entity = _mapper.Map<Atendimento>(atendimento);
+            _atendimentoRepository.Adicionar(entity);
         }
 
-        public IEnumerable<Atendimento> ObterHistorico()
+        public IEnumerable<AtendimentoDTO> ObterHistorico()
         {
-            return _atendimentoRepository.ObterHistoricoCompleto();
+            var atendimentos = _atendimentoRepository.ObterHistoricoCompleto();
+            return _mapper.Map<IEnumerable<AtendimentoDTO>>(atendimentos);
         }
     }
 }

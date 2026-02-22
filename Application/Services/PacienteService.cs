@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Application.DTO;
 using Application.Services.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces;
@@ -12,13 +14,15 @@ namespace Application.Services
     public class PacienteService : IPacienteService
     {
         private readonly IPacienteRepository _pacienteRepository;
+        private readonly IMapper _mapper;
 
-        public PacienteService(IPacienteRepository pacienteRepository)
+        public PacienteService(IPacienteRepository pacienteRepository, IMapper mapper)
         {
             _pacienteRepository = pacienteRepository;
+            _mapper = mapper;
         }
 
-        public void Adicionar(Paciente paciente)
+        public void Adicionar(PacienteDTO paciente)
         {
             // Limpa a formatação do CPF para garantir apenas números
             paciente.Cpf = paciente.Cpf?.Replace(".", "").Replace("-", "").Trim();
@@ -35,17 +39,20 @@ namespace Application.Services
                 throw new DomainException("Já existe um paciente cadastrado com este CPF.");
             }
 
-            _pacienteRepository.Adicionar(paciente);
+            var entity = _mapper.Map<Paciente>(paciente);
+            _pacienteRepository.Adicionar(entity);
         }
 
-        public IEnumerable<Paciente> ObterTodos()
+        public IEnumerable<PacienteDTO> ObterTodos()
         {
-            return _pacienteRepository.ObterTodos();
+            var pacientes = _pacienteRepository.ObterTodos();
+            return _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
         }
 
-        public Paciente ObterPorId(int id)
+        public PacienteDTO ObterPorId(int id)
         {
-            return _pacienteRepository.ObterPorId(id);
+            var paciente = _pacienteRepository.ObterPorId(id);
+            return _mapper.Map<PacienteDTO>(paciente);
         }
 
         private bool CpfEhValido(string cpf)

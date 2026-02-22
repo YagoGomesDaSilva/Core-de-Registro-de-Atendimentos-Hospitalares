@@ -1,47 +1,64 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTO;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Net.Http;
+using System.Text;
 using System.Web.Mvc;
 
 namespace WebApplication.Controllers
 {
     public class PacienteController : Controller
     {
-        private readonly IPacienteService _pacienteService;
+        private static readonly HttpClient _httpClient = new HttpClient();
 
-        public PacienteController(IPacienteService pacienteService)
+        private string GetApiBaseUrl()
         {
-            _pacienteService = pacienteService;
+            return string.Format("{0}://{1}{2}api/",
+                Request.Url.Scheme, Request.Url.Authority, Url.Content("~/"));
         }
 
         public ActionResult Index()
         {
-            var pacientes = _pacienteService.ObterTodos();
+            var apiUrl = GetApiBaseUrl() + "paciente";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            var pacientes = new List<PacienteDTO>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = response.Content.ReadAsStringAsync().Result;
+                pacientes = JsonConvert.DeserializeObject<List<PacienteDTO>>(json);
+            }
+
             return View(pacientes);
         }
 
         public ActionResult Create()
         {
-            return View(new Paciente());
+            return View(new PacienteDTO());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Paciente paciente)
+        public ActionResult Create(PacienteDTO paciente)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _pacienteService.Adicionar(paciente);
-                    return RedirectToAction("Index");
-                }
-                catch (DomainException ex)
-                {
-                    // Captura a exceção de negócio e envia para a View
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    var apiUrl = GetApiBaseUrl() + "paciente";
+                    var json = JsonConvert.SerializeObject(paciente);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = _httpClient.PostAsync(apiUrl, content).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    var errorJson = response.Content.ReadAsStringAsync().Result;
+                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
+                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao salvar o paciente.");
                 }
                 catch (Exception)
                 {

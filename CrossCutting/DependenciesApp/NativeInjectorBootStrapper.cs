@@ -1,5 +1,7 @@
-﻿using Application.Services;
+﻿using Application.Mappings;
+using Application.Services;
 using Application.Services.Interfaces;
+using AutoMapper;
 using Domain.Interfaces;
 using Infrastructure.Context;
 using Infrastructure.Repositories;
@@ -19,6 +21,14 @@ namespace CrossCutting.DependenciesApp
         {
             // O DbContext deve ser Scoped (uma instância por requisição HTTP)
             container.Register<HospitalContext>(Lifestyle.Scoped);
+
+            // AutoMapper
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+            mapperConfig.AssertConfigurationIsValid();
+            container.RegisterInstance<IMapper>(mapperConfig.CreateMapper());
 
             // Repositórios
             container.Register<IPacienteRepository, PacienteRepository>(Lifestyle.Scoped);

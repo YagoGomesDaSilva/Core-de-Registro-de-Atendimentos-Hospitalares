@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTO;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Application.Services.Interfaces
 {
     public interface IAtendimentoService
     {
-        void RegistrarAtendimento(Atendimento atendimento);
-        IEnumerable<Atendimento> ObterHistorico();
+        void RegistrarAtendimento(AtendimentoDTO atendimento);
+        IEnumerable<AtendimentoDTO> ObterHistorico();
     }
 }

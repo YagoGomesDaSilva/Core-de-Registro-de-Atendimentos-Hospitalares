@@ -1,51 +1,66 @@
-﻿using Application.Services.Interfaces;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Application.DTO;
 using System.Linq;
-using System.Web;
+using System.Net.Http;
+using System.Text;
 using System.Web.Mvc;
 
 namespace WebApplication.Controllers
 {
     public class AtendimentoController : Controller
     {
-        // GET: Atendimento
-        private readonly IAtendimentoService _atendimentoService;
-        private readonly IPacienteService _pacienteService;
+        private static readonly HttpClient _httpClient = new HttpClient();
 
-        public AtendimentoController(IAtendimentoService atendimentoService, IPacienteService pacienteService)
+        private string GetApiBaseUrl()
         {
-            _atendimentoService = atendimentoService;
-            _pacienteService = pacienteService;
+            return string.Format("{0}://{1}{2}api/",
+                Request.Url.Scheme, Request.Url.Authority, Url.Content("~/"));
         }
 
         public ActionResult Index()
         {
-            var historico = _atendimentoService.ObterHistorico();
+            var apiUrl = GetApiBaseUrl() + "atendimento";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            var historico = new List<AtendimentoDTO>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = response.Content.ReadAsStringAsync().Result;
+                historico = JsonConvert.DeserializeObject<List<AtendimentoDTO>>(json);
+            }
+
             return View(historico);
         }
 
         public ActionResult Create()
         {
             CarregarViewBagPacientes();
-            return View(new Atendimento());
+            return View(new AtendimentoDTO());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Atendimento atendimento)
+        public ActionResult Create(AtendimentoDTO atendimento)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _atendimentoService.RegistrarAtendimento(atendimento);
-                    return RedirectToAction("Index");
-                }
-                catch (DomainException ex)
-                {
-                    // Aqui a regra de barramento do status "Ativo" será exibida ao usuário
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    var apiUrl = GetApiBaseUrl() + "atendimento";
+                    var json = JsonConvert.SerializeObject(atendimento);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = _httpClient.PostAsync(apiUrl, content).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    var errorJson = response.Content.ReadAsStringAsync().Result;
+                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
+                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao registrar o atendimento.");
                 }
                 catch (Exception)
                 {
@@ -59,7 +74,16 @@ namespace WebApplication.Controllers
 
         private void CarregarViewBagPacientes()
         {
-            var pacientes = _pacienteService.ObterTodos().ToList();
+            var apiUrl = GetApiBaseUrl() + "paciente";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            var pacientes = new List<PacienteDTO>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = response.Content.ReadAsStringAsync().Result;
+                pacientes = JsonConvert.DeserializeObject<List<PacienteDTO>>(json);
+            }
+
             ViewBag.PacienteId = new SelectList(pacientes, "Id", "Nome");
         }
     }

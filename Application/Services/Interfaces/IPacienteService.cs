@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTO;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Application.Services.Interfaces
 {
     public interface IPacienteService
     {
-        void Adicionar(Paciente paciente);
-        IEnumerable<Paciente> ObterTodos();
-        Paciente ObterPorId(int id);
+        void Adicionar(PacienteDTO paciente);
+        IEnumerable<PacienteDTO> ObterTodos();
+        PacienteDTO ObterPorId(int id);
     }
 }
