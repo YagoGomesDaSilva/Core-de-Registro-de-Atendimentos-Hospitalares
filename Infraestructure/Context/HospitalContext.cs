@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infrastructure.Mappings;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -24,8 +25,8 @@ namespace Infrastructure.Context
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // Configuração explícita das tabelas
-            modelBuilder.Entity<Paciente>().ToTable("Paciente");
-            modelBuilder.Entity<Atendimento>().ToTable("Atendimento");
+            modelBuilder.Configurations.Add(new PacienteMap());
+            modelBuilder.Configurations.Add(new AtendimentoMap());
 
             base.OnModelCreating(modelBuilder);
         }
