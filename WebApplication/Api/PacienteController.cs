@@ -9,6 +9,9 @@ using System.Web.Http;
 
 namespace WebApplication.Api
 {
+    /// <summary>
+    /// API para gerenciamento de pacientes
+    /// </summary>
     public class PacienteController : ApiController
     {
         private readonly IPacienteService _pacienteService;
@@ -18,14 +21,21 @@ namespace WebApplication.Api
             _pacienteService = pacienteService;
         }
 
-        // GET api/paciente
+        /// <summary>
+        /// Obtém todos os pacientes cadastrados
+        /// </summary>
+        /// <returns>Lista de pacientes</returns>
         public IHttpActionResult Get()
         {
             var pacientes = _pacienteService.ObterTodos();
             return Ok(pacientes);
         }
 
-        // GET api/paciente/5
+        /// <summary>
+        /// Obtém um paciente pelo ID
+        /// </summary>
+        /// <param name="id">ID do paciente</param>
+        /// <returns>Dados do paciente</returns>
         public IHttpActionResult Get(int id)
         {
             var paciente = _pacienteService.ObterPorId(id);
@@ -35,7 +45,11 @@ namespace WebApplication.Api
             return Ok(paciente);
         }
 
-        // POST api/paciente
+        /// <summary>
+        /// Cadastra um novo paciente
+        /// </summary>
+        /// <param name="paciente">Dados do paciente</param>
+        /// <returns>Paciente cadastrado</returns>
         public IHttpActionResult Post([FromBody] PacienteDTO paciente)
         {
             if (!ModelState.IsValid)

@@ -8,6 +8,9 @@ using System.Web.Http;
 
 namespace WebApplication.Api
 {
+    /// <summary>
+    /// API para gerenciamento de atendimentos hospitalares
+    /// </summary>
     public class AtendimentoController : ApiController
     {
         private readonly IAtendimentoService _atendimentoService;
@@ -19,14 +22,20 @@ namespace WebApplication.Api
             _pacienteService = pacienteService;
         }
 
-        // GET api/atendimento
+        /// <summary>
+        /// Obtém o histórico de atendimentos
+        /// </summary>
+        /// <returns>Lista de atendimentos realizados</returns>
         public IHttpActionResult Get()
         {
             var historico = _atendimentoService.ObterHistorico();
             return Ok(historico);
         }
 
-        // GET api/atendimento/pacientes
+        /// <summary>
+        /// Obtém a lista de pacientes disponíveis para atendimento
+        /// </summary>
+        /// <returns>Lista de pacientes</returns>
         [HttpGet]
         [Route("api/atendimento/pacientes")]
         public IHttpActionResult GetPacientes()
@@ -35,7 +44,11 @@ namespace WebApplication.Api
             return Ok(pacientes);
         }
 
-        // POST api/atendimento
+        /// <summary>
+        /// Registra um novo atendimento
+        /// </summary>
+        /// <param name="atendimento">Dados do atendimento</param>
+        /// <returns>Atendimento registrado</returns>
         public IHttpActionResult Post([FromBody] AtendimentoDTO atendimento)
         {
             if (!ModelState.IsValid)
