@@ -14,5 +14,6 @@ namespace Domain.Interfaces
         IEnumerable<Paciente> ObterTodos();
         void Atualizar(Paciente paciente);
         void Remover(int id);
+        IEnumerable<Paciente> ObterPacientesComAtendimentoAtivo();
     }
 }

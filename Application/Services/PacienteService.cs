@@ -53,6 +53,12 @@ namespace Application.Services
             return _mapper.Map<PacienteDTO>(paciente);
         }
 
+        public IEnumerable<PacienteDTO> ObterPacientesComAtendimentoAtivo()
+        {
+            var pacientes = _pacienteRepository.ObterPacientesComAtendimentoAtivo();
+            return _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
+        }
+
         private bool CpfEhValido(string cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf) || cpf.Length != 11 || cpf.All(c => c == cpf[0]))

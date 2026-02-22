@@ -8,5 +8,6 @@ namespace Application.Services.Interfaces
         PacienteDTO Adicionar(PacienteDTO paciente);
         IEnumerable<PacienteDTO> ObterTodos();
         PacienteDTO ObterPorId(int id);
+        IEnumerable<PacienteDTO> ObterPacientesComAtendimentoAtivo();
     }
 }

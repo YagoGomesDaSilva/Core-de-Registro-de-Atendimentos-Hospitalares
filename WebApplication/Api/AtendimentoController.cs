@@ -37,10 +37,10 @@ namespace WebApplication.Api
         /// </summary>
         /// <returns>Lista de pacientes</returns>
         [HttpGet]
-        [Route("api/atendimento/pacientes")]
-        public IHttpActionResult GetPacientes()
+        [Route("api/atendimento/pacientesDisponiveis")]
+        public IHttpActionResult GetPacientesDisponiveis()
         {
-            var pacientes = _pacienteService.ObterTodos();
+            var pacientes = _pacienteService.ObterPacientesComAtendimentoAtivo();
             return Ok(pacientes);
         }
 

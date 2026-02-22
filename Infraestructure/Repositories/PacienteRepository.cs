@@ -50,5 +50,13 @@ namespace Infrastructure.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public IEnumerable<Paciente> ObterPacientesComAtendimentoAtivo()
+        {
+            return _context.Pacientes
+                .Include("Atendimentos")
+                .Where(p => p.Atendimentos.Any(a => a.StatusAtendimento == "Ativo"))
+                .ToList();
+        }
     }
 }
