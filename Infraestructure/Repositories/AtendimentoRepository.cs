@@ -25,12 +25,16 @@ namespace Infrastructure.Repositories
 
         public Atendimento ObterPorId(int id)
         {
-            return _context.Atendimentos.FirstOrDefault(a => a.Id == id);
+            return _context.Atendimentos
+                .Include(a => a.Paciente)
+                .FirstOrDefault(a => a.Id == id);
         }
 
         public IEnumerable<Atendimento> ObterHistorico()
         {
-            return _context.Atendimentos.ToList();
+            return _context.Atendimentos
+                .Include(a => a.Paciente)
+                .ToList();
         }
 
         public IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId)
