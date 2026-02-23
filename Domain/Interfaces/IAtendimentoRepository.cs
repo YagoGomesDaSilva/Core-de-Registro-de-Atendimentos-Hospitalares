@@ -5,11 +5,11 @@ namespace Domain.Interfaces
 {
     public interface IAtendimentoRepository
     {
-        void Adicionar(Atendimento atendimento);
+        Atendimento Adicionar(Atendimento atendimento);
         Atendimento ObterPorId(int id);
         IEnumerable<Atendimento> ObterHistorico();
         IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId);
-        void Atualizar(Atendimento atendimento);
-        void Remover(int id);
+        Atendimento Atualizar(Atendimento atendimento);
+        bool Remover(int id);
     }
 }

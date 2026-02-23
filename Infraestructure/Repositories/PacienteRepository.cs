@@ -1,12 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Context;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -19,10 +16,11 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public void Adicionar(Paciente paciente)
+        public Paciente Adicionar(Paciente paciente)
         {
             _context.Pacientes.Add(paciente);
             _context.SaveChanges();
+            return paciente;
         }
 
         public Paciente ObterPorId(int id)
@@ -35,20 +33,22 @@ namespace Infrastructure.Repositories
             return _context.Pacientes.ToList();
         }
 
-        public void Atualizar(Paciente paciente)
+        public Paciente Atualizar(Paciente paciente)
         {
             _context.Entry(paciente).State = EntityState.Modified;
             _context.SaveChanges();
+            return paciente;
         }
 
-        public void Remover(int id)
+        public bool Remover(int id)
         {
             var paciente = _context.Pacientes.Find(id);
-            if (paciente != null)
-            {
-                _context.Pacientes.Remove(paciente);
-                _context.SaveChanges();
-            }
+            if (paciente == null)
+                return false;
+
+            _context.Pacientes.Remove(paciente);
+            _context.SaveChanges();
+            return true;
         }
 
         public IEnumerable<Paciente> ObterPacientesComAtendimentoAtivo()

@@ -10,6 +10,6 @@ namespace Application.Services.Interfaces
         PacienteDTO ObterPorId(int id);
         IEnumerable<PacienteDTO> ObterTodos();
         IEnumerable<PacienteDTO> ObterPacientesComAtendimentoAtivo();
-        void Remover(int id);
+        bool Remover(int id);
     }
 }

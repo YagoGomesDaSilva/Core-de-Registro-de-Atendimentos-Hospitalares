@@ -16,10 +16,11 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public void Adicionar(Atendimento atendimento)
+        public Atendimento Adicionar(Atendimento atendimento)
         {
             _context.Atendimentos.Add(atendimento);
             _context.SaveChanges();
+            return atendimento;
         }
 
         public Atendimento ObterPorId(int id)
@@ -39,20 +40,22 @@ namespace Infrastructure.Repositories
                 .ToList();
         }
 
-        public void Atualizar(Atendimento atendimento)
+        public Atendimento Atualizar(Atendimento atendimento)
         {
             _context.Entry(atendimento).State = EntityState.Modified;
             _context.SaveChanges();
+            return atendimento;
         }
 
-        public void Remover(int id)
+        public bool Remover(int id)
         {
             var atendimento = _context.Atendimentos.Find(id);
-            if (atendimento != null)
-            {
-                _context.Atendimentos.Remove(atendimento);
-                _context.SaveChanges();
-            }
+            if (atendimento == null)
+                return false;
+
+            _context.Atendimentos.Remove(atendimento);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

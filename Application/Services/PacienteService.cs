@@ -93,7 +93,7 @@ namespace Application.Services
             return resultado;
         }
 
-        public void Remover(int id)
+        public bool Remover(int id)
         {
             var entidadeExistente = _pacienteRepository.ObterPorId(id);
             if (entidadeExistente == null)
@@ -102,7 +102,7 @@ namespace Application.Services
             if (entidadeExistente.Atendimentos.Any())
                 throw new DomainException("Não é possível remover um paciente que possui atendimentos registrados.");
 
-            _pacienteRepository.Remover(id);
+            return _pacienteRepository.Remover(id);
         }
 
         private bool CpfEhValido(string cpf)
