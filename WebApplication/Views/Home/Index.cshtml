@@ -1,3 +1,30 @@
-﻿<main>
-    <H1>Main</H1>
-</main>
+﻿@{
+    ViewBag.Title = "Início";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">Sistema de Atendimento Hospitalar</h1>
+    <p class="lead text-muted">Gerencie pacientes e atendimentos de forma simples e eficiente.</p>
+    <hr />
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h3 class="card-title">Pacientes</h3>
+                <p class="card-text text-muted">Cadastre, edite, visualize e remova pacientes do sistema.</p>
+                <a href="@Url.Action("Index", "Paciente")" class="btn btn-primary btn-lg mt-2">Gerenciar Pacientes</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h3 class="card-title">Atendimentos</h3>
+                <p class="card-text text-muted">Registre, edite, visualize e remova atendimentos hospitalares.</p>
+                <a href="@Url.Action("Index", "Atendimento")" class="btn btn-success btn-lg mt-2">Gerenciar Atendimentos</a>
+            </div>
+        </div>
+    </div>
+</div>

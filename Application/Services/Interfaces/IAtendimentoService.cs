@@ -7,6 +7,7 @@ namespace Application.Services.Interfaces
     {
         AtendimentoDTO RegistrarAtendimento(AtendimentoDTO atendimento);
         AtendimentoDTO Atualizar(int id, AtendimentoDTO atendimento);
+        AtendimentoDTO ObterPorId(int id);
         IEnumerable<AtendimentoDTO> ObterHistorico();
         bool Remover(int id);
     }

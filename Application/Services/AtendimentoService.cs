@@ -43,6 +43,12 @@ namespace Application.Services
             return _mapper.Map<AtendimentoDTO>(entity); 
         }
 
+        public AtendimentoDTO ObterPorId(int id)
+        {
+            var atendimento = _atendimentoRepository.ObterPorId(id);
+            return _mapper.Map<AtendimentoDTO>(atendimento);
+        }
+
         public IEnumerable<AtendimentoDTO> ObterHistorico()
         {
             var atendimentos = _atendimentoRepository.ObterHistorico();

@@ -15,5 +15,6 @@ namespace Application.DTO
         public string PressaoArterial { get; set; }
         public decimal? Temperatura { get; set; }
         public int? FrequenciaCardiaca { get; set; }
+        public PacienteDTO Paciente { get; set; }
     }
 }

@@ -67,5 +67,80 @@ namespace WebApplication.Controllers
             }
             return View(paciente);
         }
+
+        public ActionResult Edit(int id)
+        {
+            var apiUrl = GetApiBaseUrl() + "paciente/" + id;
+            var response = _httpClient.GetAsync(apiUrl).Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Erro"] = "Paciente não encontrado.";
+                return RedirectToAction("Index");
+            }
+
+            var json = response.Content.ReadAsStringAsync().Result;
+            var paciente = JsonConvert.DeserializeObject<PacienteDTO>(json);
+            return View(paciente);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(PacienteDTO paciente)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var apiUrl = GetApiBaseUrl() + "paciente/" + paciente.Id;
+                    var json = JsonConvert.SerializeObject(paciente);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = _httpClient.PutAsync(apiUrl, content).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["Sucesso"] = "Paciente atualizado com sucesso.";
+                        return RedirectToAction("Index");
+                    }
+
+                    var errorJson = response.Content.ReadAsStringAsync().Result;
+                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
+                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao atualizar o paciente.");
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError(string.Empty, "Ocorreu um erro inesperado ao atualizar o paciente.");
+                }
+            }
+            return View(paciente);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                var apiUrl = GetApiBaseUrl() + "paciente/" + id;
+                var response = _httpClient.DeleteAsync(apiUrl).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Sucesso"] = "Paciente removido com sucesso.";
+                }
+                else
+                {
+                    var errorJson = response.Content.ReadAsStringAsync().Result;
+                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
+                    TempData["Erro"] = error?.Message ?? "Erro ao excluir o paciente.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["Erro"] = "Ocorreu um erro inesperado ao excluir o paciente.";
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }

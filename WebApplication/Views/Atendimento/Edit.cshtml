@@ -1,0 +1,66 @@
+@model Application.DTO.AtendimentoDTO
+
+@{
+    ViewBag.Title = "Editar Atendimento";
+}
+
+<h2>Editar Atendimento</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.PacienteId)
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+        <div class="form-group mb-3">
+            <label class="control-label col-md-2">Paciente</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" value="@(Model.Paciente != null ? Model.Paciente.Nome : "ID: " + Model.PacienteId)" disabled />
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.StatusAtendimento, "Status do Atendimento", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.StatusAtendimento, new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Ativo", Value = "Ativo" },
+                    new SelectListItem { Text = "Finalizado", Value = "Finalizado" }
+                }, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.PressaoArterial, "Pressão Arterial", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.PressaoArterial, new { htmlAttributes = new { @class = "form-control", placeholder = "Ex: 120/80" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.Temperatura, "Temperatura (°C)", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Temperatura, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.1" } })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.FrequenciaCardiaca, "Freq. Cardíaca (BPM)", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.FrequenciaCardiaca, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Salvar Alterações" class="btn btn-primary" />
+                @Html.ActionLink("Voltar para Histórico", "Index", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+}

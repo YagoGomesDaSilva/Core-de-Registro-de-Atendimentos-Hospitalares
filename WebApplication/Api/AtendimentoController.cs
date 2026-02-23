@@ -33,6 +33,20 @@ namespace WebApplication.Api
         }
 
         /// <summary>
+        /// Obtém um atendimento pelo ID
+        /// </summary>
+        /// <param name="id">ID do atendimento</param>
+        /// <returns>Dados do atendimento</returns>
+        public IHttpActionResult Get(int id)
+        {
+            var atendimento = _atendimentoService.ObterPorId(id);
+            if (atendimento == null)
+                return NotFound();
+
+            return Ok(atendimento);
+        }
+
+        /// <summary>
         /// Obtém a lista de pacientes disponíveis para atendimento
         /// </summary>
         /// <returns>Lista de pacientes</returns>
