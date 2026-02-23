@@ -167,6 +167,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Api\PacienteController.cs" />
     <Compile Include="Controllers\PacienteController.cs" />
+    <Compile Include="Filters\ApiExceptionFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

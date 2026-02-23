@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Application.DTO;
+using Application.Exceptions;
 using Application.Services.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Exceptions;
 using Domain.Interfaces;
 
 namespace Application.Services
@@ -28,17 +27,17 @@ namespace Application.Services
             paciente.Cpf = paciente.Cpf?.Replace(".", "").Replace("-", "").Trim();
 
             if (!CpfEhValido(paciente.Cpf))
-                throw new DomainException("O CPF informado possui um formato ou dígito verificador inválido.");
+                throw new ServiceException("O CPF informado possui um formato ou dígito verificador inválido.");
 
             // Regra extra implícita: não permitir CPF duplicado
             var cpfJaExiste = _pacienteRepository.ObterTodos().Any(p => p.Cpf == paciente.Cpf);
             if (cpfJaExiste)
-                throw new DomainException("Já existe um paciente cadastrado com este CPF.");
+                throw new ServiceException("Já existe um paciente cadastrado com este CPF.");
 
             var entity = _mapper.Map<Paciente>(paciente);
             _pacienteRepository.Adicionar(entity);
 
-            return _mapper.Map<PacienteDTO>(entity); 
+            return _mapper.Map<PacienteDTO>(entity);
         }
 
         public IEnumerable<PacienteDTO> ObterTodos()
@@ -63,19 +62,19 @@ namespace Application.Services
         {
             var entidadeExistente = _pacienteRepository.ObterPorId(paciente.Id);
             if (entidadeExistente == null)
-                throw new DomainException("Paciente não encontrado.");
+                throw new NotFoundException("Paciente", paciente.Id);
 
             if (!string.IsNullOrWhiteSpace(paciente.Cpf))
             {
                 paciente.Cpf = paciente.Cpf?.Replace(".", "").Replace("-", "").Trim();
 
                 if (!CpfEhValido(paciente.Cpf))
-                    throw new DomainException("O CPF informado possui um formato ou dígito verificador inválido.");
+                    throw new ServiceException("O CPF informado possui um formato ou dígito verificador inválido.");
 
                 var cpfJaExiste = _pacienteRepository.ObterTodos()
                     .Any(p => p.Cpf == paciente.Cpf && p.Id != paciente.Id);
                 if (cpfJaExiste)
-                    throw new DomainException("Já existe outro paciente cadastrado com este CPF.");
+                    throw new ServiceException("Já existe outro paciente cadastrado com este CPF.");
 
                 entidadeExistente.Cpf = paciente.Cpf;
             }
@@ -83,13 +82,13 @@ namespace Application.Services
             if (!string.IsNullOrWhiteSpace(paciente.Nome))
                 entidadeExistente.Nome = paciente.Nome;
 
-            if (paciente.DataNascimento.HasValue) 
+            if (paciente.DataNascimento.HasValue)
                 entidadeExistente.DataNascimento = paciente.DataNascimento.Value;
 
             _pacienteRepository.Atualizar(entidadeExistente);
 
             var resultado = _mapper.Map<PacienteDTO>(entidadeExistente);
-            resultado.Atendimentos = null; 
+            resultado.Atendimentos = null;
             return resultado;
         }
 
@@ -97,10 +96,10 @@ namespace Application.Services
         {
             var entidadeExistente = _pacienteRepository.ObterPorId(id);
             if (entidadeExistente == null)
-                throw new DomainException("Paciente não encontrado.");
+                throw new NotFoundException("Paciente", id);
 
             if (entidadeExistente.Atendimentos.Any())
-                throw new DomainException("Não é possível remover um paciente que possui atendimentos registrados.");
+                throw new ServiceException("Não é possível remover um paciente que possui atendimentos registrados.");
 
             return _pacienteRepository.Remover(id);
         }

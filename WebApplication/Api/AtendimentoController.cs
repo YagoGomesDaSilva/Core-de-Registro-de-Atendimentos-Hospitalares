@@ -1,9 +1,5 @@
 ﻿using Application.Services.Interfaces;
 using Application.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
 
 namespace WebApplication.Api
@@ -68,15 +64,8 @@ namespace WebApplication.Api
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                var resultado = _atendimentoService.RegistrarAtendimento(atendimento);
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var resultado = _atendimentoService.RegistrarAtendimento(atendimento);
+            return Ok(resultado);
         }
 
         /// <summary>
@@ -89,15 +78,8 @@ namespace WebApplication.Api
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                var resultado = _atendimentoService.Atualizar(id, atendimento);
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var resultado = _atendimentoService.Atualizar(id, atendimento);
+            return Ok(resultado);
         }
 
         /// <summary>
@@ -106,15 +88,8 @@ namespace WebApplication.Api
         /// <param name="id">ID do atendimento</param>
         public IHttpActionResult Delete(int id)
         {
-            try
-            {
-                _atendimentoService.Remover(id);
-                return Ok(new { mensagem = "Atendimento removido com sucesso." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            _atendimentoService.Remover(id);
+            return Ok(new { mensagem = "Atendimento removido com sucesso." });
         }
     }
 }

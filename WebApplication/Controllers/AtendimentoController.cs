@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using Application.DTO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web.Mvc;
@@ -21,17 +20,25 @@ namespace WebApplication.Controllers
 
         public ActionResult Index()
         {
-            var apiUrl = GetApiBaseUrl() + "atendimento";
-            var response = _httpClient.GetAsync(apiUrl).Result;
-            var historico = new List<AtendimentoDTO>();
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = response.Content.ReadAsStringAsync().Result;
-                historico = JsonConvert.DeserializeObject<List<AtendimentoDTO>>(json);
-            }
+                var apiUrl = GetApiBaseUrl() + "atendimento";
+                var response = _httpClient.GetAsync(apiUrl).Result;
+                var historico = new List<AtendimentoDTO>();
 
-            return View(historico);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = response.Content.ReadAsStringAsync().Result;
+                    historico = JsonConvert.DeserializeObject<List<AtendimentoDTO>>(json);
+                }
+
+                return View(historico);
+            }
+            catch (Exception)
+            {
+                TempData["Erro"] = "Não foi possível carregar o histórico de atendimentos.";
+                return View(new List<AtendimentoDTO>());
+            }
         }
 
         public ActionResult Create()
@@ -58,9 +65,7 @@ namespace WebApplication.Controllers
                         return RedirectToAction("Index");
                     }
 
-                    var errorJson = response.Content.ReadAsStringAsync().Result;
-                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao registrar o atendimento.");
+                    AdicionarErrosDaApi(response);
                 }
                 catch (Exception)
                 {
@@ -74,18 +79,26 @@ namespace WebApplication.Controllers
 
         public ActionResult Edit(int id)
         {
-            var apiUrl = GetApiBaseUrl() + "atendimento/" + id;
-            var response = _httpClient.GetAsync(apiUrl).Result;
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                TempData["Erro"] = "Atendimento não encontrado.";
+                var apiUrl = GetApiBaseUrl() + "atendimento/" + id;
+                var response = _httpClient.GetAsync(apiUrl).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Erro"] = "Atendimento não encontrado.";
+                    return RedirectToAction("Index");
+                }
+
+                var json = response.Content.ReadAsStringAsync().Result;
+                var atendimento = JsonConvert.DeserializeObject<AtendimentoDTO>(json);
+                return View(atendimento);
+            }
+            catch (Exception)
+            {
+                TempData["Erro"] = "Não foi possível carregar os dados do atendimento.";
                 return RedirectToAction("Index");
             }
-
-            var json = response.Content.ReadAsStringAsync().Result;
-            var atendimento = JsonConvert.DeserializeObject<AtendimentoDTO>(json);
-            return View(atendimento);
         }
 
         [HttpPost]
@@ -107,9 +120,7 @@ namespace WebApplication.Controllers
                         return RedirectToAction("Index");
                     }
 
-                    var errorJson = response.Content.ReadAsStringAsync().Result;
-                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao atualizar o atendimento.");
+                    AdicionarErrosDaApi(response);
                 }
                 catch (Exception)
                 {
@@ -134,9 +145,7 @@ namespace WebApplication.Controllers
                 }
                 else
                 {
-                    var errorJson = response.Content.ReadAsStringAsync().Result;
-                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                    TempData["Erro"] = error?.Message ?? "Erro ao excluir o atendimento.";
+                    TempData["Erro"] = ExtrairMensagemDeErro(response, "Erro ao excluir o atendimento.");
                 }
             }
             catch (Exception)
@@ -149,17 +158,50 @@ namespace WebApplication.Controllers
 
         private void CarregarViewBagPacientes()
         {
-            var apiUrl = GetApiBaseUrl() + "paciente";
-            var response = _httpClient.GetAsync(apiUrl).Result;
-            var pacientes = new List<PacienteDTO>();
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = response.Content.ReadAsStringAsync().Result;
-                pacientes = JsonConvert.DeserializeObject<List<PacienteDTO>>(json);
-            }
+                var apiUrl = GetApiBaseUrl() + "paciente";
+                var response = _httpClient.GetAsync(apiUrl).Result;
+                var pacientes = new List<PacienteDTO>();
 
-            ViewBag.PacienteId = new SelectList(pacientes, "Id", "Nome");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = response.Content.ReadAsStringAsync().Result;
+                    pacientes = JsonConvert.DeserializeObject<List<PacienteDTO>>(json);
+                }
+
+                ViewBag.PacienteId = new SelectList(pacientes, "Id", "Nome");
+            }
+            catch (Exception)
+            {
+                ViewBag.PacienteId = new SelectList(new List<PacienteDTO>(), "Id", "Nome");
+            }
+        }
+
+        /// <summary>
+        /// Extrai a mensagem de erro da resposta da API e adiciona ao ModelState.
+        /// </summary>
+        private void AdicionarErrosDaApi(HttpResponseMessage response)
+        {
+            var mensagem = ExtrairMensagemDeErro(response, "Erro ao processar a solicitação.");
+            ModelState.AddModelError(string.Empty, mensagem);
+        }
+
+        /// <summary>
+        /// Extrai a mensagem de erro do corpo da resposta HTTP.
+        /// </summary>
+        private static string ExtrairMensagemDeErro(HttpResponseMessage response, string fallback)
+        {
+            try
+            {
+                var errorJson = response.Content.ReadAsStringAsync().Result;
+                var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
+                return error?.Message ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
         }
     }
 }

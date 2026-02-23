@@ -1,7 +1,5 @@
 ﻿using Application.Services.Interfaces;
 using Application.DTO;
-using System;
-using System.Collections.Generic;
 using System.Web.Http;
 
 namespace WebApplication.Api
@@ -52,15 +50,8 @@ namespace WebApplication.Api
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                var resultado = _pacienteService.Adicionar(paciente);
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var resultado = _pacienteService.Adicionar(paciente);
+            return Ok(resultado);
         }
 
         /// <summary>
@@ -71,16 +62,9 @@ namespace WebApplication.Api
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            try
-            {
-                paciente.Id = id; // garante que o ID da URL prevalece
-                var resultado = _pacienteService.Atualizar(paciente);
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            paciente.Id = id;
+            var resultado = _pacienteService.Atualizar(paciente);
+            return Ok(resultado);
         }
 
         /// <summary>
@@ -89,15 +73,8 @@ namespace WebApplication.Api
         /// <param name="id">ID do paciente</param>
         public IHttpActionResult Delete(int id)
         {
-            try
-            {
-                _pacienteService.Remover(id);
-                return Ok(new { mensagem = "Paciente removido com sucesso." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            _pacienteService.Remover(id);
+            return Ok(new { mensagem = "Paciente removido com sucesso." });
         }
     }
 }

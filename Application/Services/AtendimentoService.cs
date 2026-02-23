@@ -1,13 +1,12 @@
 ﻿using Application.DTO;
+using Application.Exceptions;
 using Application.Services.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Exceptions;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Application.Services
 {
@@ -28,10 +27,11 @@ namespace Application.Services
             var atendimentosDoPaciente = _atendimentoRepository.ObterAtendimentosPorPaciente(atendimento.PacienteId);
 
             // Verifica a Regra de Negócio principal do desafio
-            bool possuiAtendimentoAtivo = atendimentosDoPaciente.Any(a => a.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase));
+            bool possuiAtendimentoAtivo = atendimentosDoPaciente
+                .Any(a => a.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase));
 
             if (possuiAtendimentoAtivo)
-                throw new DomainException("Impossível registrar: O paciente já possui um atendimento com status 'Ativo'. Finalize o atendimento atual antes de abrir um novo.");
+                throw new ServiceException("Impossível registrar: O paciente já possui um atendimento com status 'Ativo'. Finalize o atendimento atual antes de abrir um novo.");
 
             // Garante que o status inicial e a data estejam corretos
             atendimento.StatusAtendimento = "Ativo";
@@ -40,7 +40,7 @@ namespace Application.Services
             var entity = _mapper.Map<Atendimento>(atendimento);
             _atendimentoRepository.Adicionar(entity);
 
-            return _mapper.Map<AtendimentoDTO>(entity); 
+            return _mapper.Map<AtendimentoDTO>(entity);
         }
 
         public AtendimentoDTO ObterPorId(int id)
@@ -59,7 +59,7 @@ namespace Application.Services
         {
             var entidadeExistente = _atendimentoRepository.ObterPorId(id);
             if (entidadeExistente == null)
-                throw new DomainException("Atendimento não encontrado.");
+                throw new NotFoundException("Atendimento", id);
 
             if (!string.IsNullOrWhiteSpace(atendimento.StatusAtendimento))
                 entidadeExistente.StatusAtendimento = atendimento.StatusAtendimento;
@@ -82,10 +82,10 @@ namespace Application.Services
         {
             var entidadeExistente = _atendimentoRepository.ObterPorId(id);
             if (entidadeExistente == null)
-                throw new DomainException("Atendimento não encontrado.");
+                throw new NotFoundException("Atendimento", id);
 
             if (entidadeExistente.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase))
-                throw new DomainException("Não é possível remover um atendimento com status 'Ativo'. Finalize-o antes de excluir.");
+                throw new ServiceException("Não é possível remover um atendimento com status 'Ativo'. Finalize-o antes de excluir.");
 
             return _atendimentoRepository.Remover(id);
         }

@@ -20,17 +20,25 @@ namespace WebApplication.Controllers
 
         public ActionResult Index()
         {
-            var apiUrl = GetApiBaseUrl() + "paciente";
-            var response = _httpClient.GetAsync(apiUrl).Result;
-            var pacientes = new List<PacienteDTO>();
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = response.Content.ReadAsStringAsync().Result;
-                pacientes = JsonConvert.DeserializeObject<List<PacienteDTO>>(json);
-            }
+                var apiUrl = GetApiBaseUrl() + "paciente";
+                var response = _httpClient.GetAsync(apiUrl).Result;
+                var pacientes = new List<PacienteDTO>();
 
-            return View(pacientes);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = response.Content.ReadAsStringAsync().Result;
+                    pacientes = JsonConvert.DeserializeObject<List<PacienteDTO>>(json);
+                }
+
+                return View(pacientes);
+            }
+            catch (Exception)
+            {
+                TempData["Erro"] = "Não foi possível carregar a lista de pacientes.";
+                return View(new List<PacienteDTO>());
+            }
         }
 
         public ActionResult Create()
@@ -56,9 +64,7 @@ namespace WebApplication.Controllers
                         return RedirectToAction("Index");
                     }
 
-                    var errorJson = response.Content.ReadAsStringAsync().Result;
-                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao salvar o paciente.");
+                    AdicionarErrosDaApi(response);
                 }
                 catch (Exception)
                 {
@@ -70,18 +76,26 @@ namespace WebApplication.Controllers
 
         public ActionResult Edit(int id)
         {
-            var apiUrl = GetApiBaseUrl() + "paciente/" + id;
-            var response = _httpClient.GetAsync(apiUrl).Result;
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                TempData["Erro"] = "Paciente não encontrado.";
+                var apiUrl = GetApiBaseUrl() + "paciente/" + id;
+                var response = _httpClient.GetAsync(apiUrl).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Erro"] = "Paciente não encontrado.";
+                    return RedirectToAction("Index");
+                }
+
+                var json = response.Content.ReadAsStringAsync().Result;
+                var paciente = JsonConvert.DeserializeObject<PacienteDTO>(json);
+                return View(paciente);
+            }
+            catch (Exception)
+            {
+                TempData["Erro"] = "Não foi possível carregar os dados do paciente.";
                 return RedirectToAction("Index");
             }
-
-            var json = response.Content.ReadAsStringAsync().Result;
-            var paciente = JsonConvert.DeserializeObject<PacienteDTO>(json);
-            return View(paciente);
         }
 
         [HttpPost]
@@ -103,9 +117,7 @@ namespace WebApplication.Controllers
                         return RedirectToAction("Index");
                     }
 
-                    var errorJson = response.Content.ReadAsStringAsync().Result;
-                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                    ModelState.AddModelError(string.Empty, error?.Message ?? "Erro ao atualizar o paciente.");
+                    AdicionarErrosDaApi(response);
                 }
                 catch (Exception)
                 {
@@ -130,9 +142,7 @@ namespace WebApplication.Controllers
                 }
                 else
                 {
-                    var errorJson = response.Content.ReadAsStringAsync().Result;
-                    var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                    TempData["Erro"] = error?.Message ?? "Erro ao excluir o paciente.";
+                    TempData["Erro"] = ExtrairMensagemDeErro(response, "Erro ao excluir o paciente.");
                 }
             }
             catch (Exception)
@@ -141,6 +151,32 @@ namespace WebApplication.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Extrai a mensagem de erro da resposta da API e adiciona ao ModelState.
+        /// </summary>
+        private void AdicionarErrosDaApi(HttpResponseMessage response)
+        {
+            var mensagem = ExtrairMensagemDeErro(response, "Erro ao processar a solicitação.");
+            ModelState.AddModelError(string.Empty, mensagem);
+        }
+
+        /// <summary>
+        /// Extrai a mensagem de erro do corpo da resposta HTTP.
+        /// </summary>
+        private static string ExtrairMensagemDeErro(HttpResponseMessage response, string fallback)
+        {
+            try
+            {
+                var errorJson = response.Content.ReadAsStringAsync().Result;
+                var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
+                return error?.Message ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
         }
     }
 }

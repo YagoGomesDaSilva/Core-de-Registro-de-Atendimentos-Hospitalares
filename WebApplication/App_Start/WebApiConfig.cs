@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Web.Http;
+using WebApplication.Filters;
 
 namespace WebApplication
 {
@@ -7,7 +8,8 @@ namespace WebApplication
     {
         public static void Register(HttpConfiguration config)
         {
-            // Configuração e serviços de API Web
+            // Filtro global de exceções — centraliza todo o tratamento de erros da API
+            config.Filters.Add(new ApiExceptionFilterAttribute());
 
             // Rotas de API Web
             config.MapHttpAttributeRoutes();
