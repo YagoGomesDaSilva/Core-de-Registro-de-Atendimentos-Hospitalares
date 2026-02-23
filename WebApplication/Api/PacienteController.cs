@@ -82,5 +82,22 @@ namespace WebApplication.Api
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Remove um paciente pelo ID
+        /// </summary>
+        /// <param name="id">ID do paciente</param>
+        public IHttpActionResult Delete(int id)
+        {
+            try
+            {
+                _pacienteService.Remover(id);
+                return Ok(new { mensagem = "Paciente removido com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

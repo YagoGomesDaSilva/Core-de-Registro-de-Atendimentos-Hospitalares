@@ -44,5 +44,15 @@ namespace Infrastructure.Repositories
             _context.Entry(atendimento).State = EntityState.Modified;
             _context.SaveChanges();
         }
+
+        public void Remover(int id)
+        {
+            var atendimento = _context.Atendimentos.Find(id);
+            if (atendimento != null)
+            {
+                _context.Atendimentos.Remove(atendimento);
+                _context.SaveChanges();
+            }
+        }
     }
 }

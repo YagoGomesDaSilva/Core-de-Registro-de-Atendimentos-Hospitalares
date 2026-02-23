@@ -10,5 +10,6 @@ namespace Domain.Interfaces
         IEnumerable<Atendimento> ObterHistorico();
         IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId);
         void Atualizar(Atendimento atendimento);
+        void Remover(int id);
     }
 }

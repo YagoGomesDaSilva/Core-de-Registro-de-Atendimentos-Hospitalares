@@ -7,8 +7,9 @@ namespace Application.Services.Interfaces
     {
         PacienteDTO Adicionar(PacienteDTO paciente);
         PacienteDTO Atualizar(PacienteDTO paciente);
-        IEnumerable<PacienteDTO> ObterTodos();
         PacienteDTO ObterPorId(int id);
+        IEnumerable<PacienteDTO> ObterTodos();
         IEnumerable<PacienteDTO> ObterPacientesComAtendimentoAtivo();
+        void Remover(int id);
     }
 }

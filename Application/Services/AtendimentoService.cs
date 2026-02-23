@@ -71,5 +71,17 @@ namespace Application.Services
 
             return _mapper.Map<AtendimentoDTO>(entidadeExistente);
         }
+
+        public void Remover(int id)
+        {
+            var entidadeExistente = _atendimentoRepository.ObterPorId(id);
+            if (entidadeExistente == null)
+                throw new DomainException("Atendimento não encontrado.");
+
+            if (entidadeExistente.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase))
+                throw new DomainException("Não é possível remover um atendimento com status 'Ativo'. Finalize-o antes de excluir.");
+
+            _atendimentoRepository.Remover(id);
+        }
     }
 }

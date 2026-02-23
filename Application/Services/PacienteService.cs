@@ -93,6 +93,21 @@ namespace Application.Services
             return resultado;
         }
 
+        public void Remover(int id)
+        {
+            var entidadeExistente = _pacienteRepository.ObterPorId(id);
+            if (entidadeExistente == null)
+                throw new DomainException("Paciente não encontrado.");
+
+            var possuiAtendimentoAtivo = entidadeExistente.Atendimentos
+                .Any(a => a.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase));
+
+            if (possuiAtendimentoAtivo)
+                throw new DomainException("Não é possível remover um paciente com atendimento 'Ativo'. Finalize o atendimento antes de excluir.");
+
+            _pacienteRepository.Remover(id);
+        }
+
         private bool CpfEhValido(string cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf) || cpf.Length != 11 || cpf.All(c => c == cpf[0]))
