@@ -8,22 +8,14 @@ using System.Web.Mvc;
 
 namespace WebApplication.Controllers
 {
-    public class PacienteController : Controller
+    public class PacienteController : BaseController
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
-
-        private string GetApiBaseUrl()
-        {
-            return string.Format("{0}://{1}{2}api/",
-                Request.Url.Scheme, Request.Url.Authority, Url.Content("~/"));
-        }
-
         public ActionResult Index()
         {
             try
             {
                 var apiUrl = GetApiBaseUrl() + "paciente";
-                var response = _httpClient.GetAsync(apiUrl).Result;
+                var response = HttpClient.GetAsync(apiUrl).Result;
                 var pacientes = new List<PacienteDTO>();
 
                 if (response.IsSuccessStatusCode)
@@ -57,7 +49,7 @@ namespace WebApplication.Controllers
                     var apiUrl = GetApiBaseUrl() + "paciente";
                     var json = JsonConvert.SerializeObject(paciente);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
-                    var response = _httpClient.PostAsync(apiUrl, content).Result;
+                    var response = HttpClient.PostAsync(apiUrl, content).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -79,7 +71,7 @@ namespace WebApplication.Controllers
             try
             {
                 var apiUrl = GetApiBaseUrl() + "paciente/" + id;
-                var response = _httpClient.GetAsync(apiUrl).Result;
+                var response = HttpClient.GetAsync(apiUrl).Result;
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -109,7 +101,7 @@ namespace WebApplication.Controllers
                     var apiUrl = GetApiBaseUrl() + "paciente/" + paciente.Id;
                     var json = JsonConvert.SerializeObject(paciente);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
-                    var response = _httpClient.PutAsync(apiUrl, content).Result;
+                    var response = HttpClient.PutAsync(apiUrl, content).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -134,7 +126,7 @@ namespace WebApplication.Controllers
             try
             {
                 var apiUrl = GetApiBaseUrl() + "paciente/" + id;
-                var response = _httpClient.DeleteAsync(apiUrl).Result;
+                var response = HttpClient.DeleteAsync(apiUrl).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -151,32 +143,6 @@ namespace WebApplication.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        /// <summary>
-        /// Extrai a mensagem de erro da resposta da API e adiciona ao ModelState.
-        /// </summary>
-        private void AdicionarErrosDaApi(HttpResponseMessage response)
-        {
-            var mensagem = ExtrairMensagemDeErro(response, "Erro ao processar a solicitação.");
-            ModelState.AddModelError(string.Empty, mensagem);
-        }
-
-        /// <summary>
-        /// Extrai a mensagem de erro do corpo da resposta HTTP.
-        /// </summary>
-        private static string ExtrairMensagemDeErro(HttpResponseMessage response, string fallback)
-        {
-            try
-            {
-                var errorJson = response.Content.ReadAsStringAsync().Result;
-                var error = JsonConvert.DeserializeAnonymousType(errorJson, new { Message = "" });
-                return error?.Message ?? fallback;
-            }
-            catch
-            {
-                return fallback;
-            }
         }
     }
 }
