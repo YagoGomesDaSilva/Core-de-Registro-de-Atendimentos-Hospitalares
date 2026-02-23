@@ -1,24 +1,27 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title - Meu aplicativo ASP.NET</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Sistema de Atendimento</title>
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
 </head>
 <body>
 
-    <nav>
-        <div>
-            <h1>Nav Bar</h1>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">Sistema de Atendimento</a>
         </div>
     </nav>
-    <div>
+
+    <div class="container">
         @RenderBody()
     </div>
-    <footer>
-        <p>&copy; @DateTime.Now.Year - Meu Aplicativo ASP.NET</p>
+
+    <footer class="bg-light text-center py-3 mt-5">
+        <p class="mb-0 text-muted">&copy; @DateTime.Now.Year - Sistema de Atendimento Hospitalar</p>
     </footer>
+
+    <script src="@Url.Content("~/Scripts/bootstrap.bundle.min.js")"></script>
 </body>
 </html>
