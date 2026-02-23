@@ -64,5 +64,26 @@ namespace WebApplication.Api
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Atualiza os dados de um atendimento existente
+        /// </summary>
+        /// <param name="id">ID do atendimento</param>
+        /// <param name="atendimento">Dados atualizados</param>
+        public IHttpActionResult Put(int id, [FromBody] AtendimentoDTO atendimento)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var resultado = _atendimentoService.Atualizar(id, atendimento);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

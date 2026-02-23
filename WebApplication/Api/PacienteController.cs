@@ -2,9 +2,6 @@
 using Application.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace WebApplication.Api
@@ -58,6 +55,26 @@ namespace WebApplication.Api
             try
             {
                 var resultado = _pacienteService.Adicionar(paciente);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Atualiza os dados de um paciente existente
+        /// </summary>
+        public IHttpActionResult Put(int id, [FromBody] PacienteDTO paciente)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                paciente.Id = id; // garante que o ID da URL prevalece
+                var resultado = _pacienteService.Atualizar(paciente);
                 return Ok(resultado);
             }
             catch (Exception ex)

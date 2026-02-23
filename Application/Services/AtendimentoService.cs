@@ -48,5 +48,28 @@ namespace Application.Services
             var atendimentos = _atendimentoRepository.ObterHistorico();
             return _mapper.Map<IEnumerable<AtendimentoDTO>>(atendimentos);
         }
+
+        public AtendimentoDTO Atualizar(int id, AtendimentoDTO atendimento)
+        {
+            var entidadeExistente = _atendimentoRepository.ObterPorId(id);
+            if (entidadeExistente == null)
+                throw new DomainException("Atendimento não encontrado.");
+
+            if (!string.IsNullOrWhiteSpace(atendimento.StatusAtendimento))
+                entidadeExistente.StatusAtendimento = atendimento.StatusAtendimento;
+
+            if (!string.IsNullOrWhiteSpace(atendimento.PressaoArterial))
+                entidadeExistente.PressaoArterial = atendimento.PressaoArterial;
+
+            if (atendimento.Temperatura.HasValue)
+                entidadeExistente.Temperatura = atendimento.Temperatura.Value;
+
+            if (atendimento.FrequenciaCardiaca.HasValue)
+                entidadeExistente.FrequenciaCardiaca = atendimento.FrequenciaCardiaca.Value;
+
+            _atendimentoRepository.Atualizar(entidadeExistente);
+
+            return _mapper.Map<AtendimentoDTO>(entidadeExistente);
+        }
     }
 }

@@ -59,6 +59,40 @@ namespace Application.Services
             return _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
         }
 
+        public PacienteDTO Atualizar(PacienteDTO paciente)
+        {
+            var entidadeExistente = _pacienteRepository.ObterPorId(paciente.Id);
+            if (entidadeExistente == null)
+                throw new DomainException("Paciente não encontrado.");
+
+            if (!string.IsNullOrWhiteSpace(paciente.Cpf))
+            {
+                paciente.Cpf = paciente.Cpf?.Replace(".", "").Replace("-", "").Trim();
+
+                if (!CpfEhValido(paciente.Cpf))
+                    throw new DomainException("O CPF informado possui um formato ou dígito verificador inválido.");
+
+                var cpfJaExiste = _pacienteRepository.ObterTodos()
+                    .Any(p => p.Cpf == paciente.Cpf && p.Id != paciente.Id);
+                if (cpfJaExiste)
+                    throw new DomainException("Já existe outro paciente cadastrado com este CPF.");
+
+                entidadeExistente.Cpf = paciente.Cpf;
+            }
+
+            if (!string.IsNullOrWhiteSpace(paciente.Nome))
+                entidadeExistente.Nome = paciente.Nome;
+
+            if (paciente.DataNascimento.HasValue) 
+                entidadeExistente.DataNascimento = paciente.DataNascimento.Value;
+
+            _pacienteRepository.Atualizar(entidadeExistente);
+
+            var resultado = _mapper.Map<PacienteDTO>(entidadeExistente);
+            resultado.Atendimentos = null; 
+            return resultado;
+        }
+
         private bool CpfEhValido(string cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf) || cpf.Length != 11 || cpf.All(c => c == cpf[0]))

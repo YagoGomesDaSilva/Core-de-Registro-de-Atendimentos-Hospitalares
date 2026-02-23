@@ -6,6 +6,7 @@ namespace Application.Services.Interfaces
     public interface IAtendimentoService
     {
         AtendimentoDTO RegistrarAtendimento(AtendimentoDTO atendimento);
+        AtendimentoDTO Atualizar(int id, AtendimentoDTO atendimento);
         IEnumerable<AtendimentoDTO> ObterHistorico();
     }
 }

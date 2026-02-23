@@ -1,12 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Context;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -25,6 +22,11 @@ namespace Infrastructure.Repositories
             _context.SaveChanges();
         }
 
+        public Atendimento ObterPorId(int id)
+        {
+            return _context.Atendimentos.FirstOrDefault(a => a.Id == id);
+        }
+
         public IEnumerable<Atendimento> ObterHistorico()
         {
             return _context.Atendimentos.ToList();
@@ -33,8 +35,14 @@ namespace Infrastructure.Repositories
         public IEnumerable<Atendimento> ObterAtendimentosPorPaciente(int pacienteId)
         {
             return _context.Atendimentos
-                           .Where(a => a.PacienteId == pacienteId)
-                           .ToList();
+                .Where(a => a.PacienteId == pacienteId)
+                .ToList();
+        }
+
+        public void Atualizar(Atendimento atendimento)
+        {
+            _context.Entry(atendimento).State = EntityState.Modified;
+            _context.SaveChanges();
         }
     }
 }
