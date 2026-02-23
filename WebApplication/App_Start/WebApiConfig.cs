@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Web.Http;
-using WebApplication.Filters;
+using WebApplication.ExceptionFilters;
 
 namespace WebApplication
 {

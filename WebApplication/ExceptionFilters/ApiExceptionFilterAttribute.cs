@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http.Filters;
 
-namespace WebApplication.Filters
+namespace WebApplication.ExceptionFilters
 {
     /// <summary>
     /// Filtro global que centraliza o tratamento de exceções da Web API.
