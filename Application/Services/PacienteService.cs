@@ -99,11 +99,8 @@ namespace Application.Services
             if (entidadeExistente == null)
                 throw new DomainException("Paciente não encontrado.");
 
-            var possuiAtendimentoAtivo = entidadeExistente.Atendimentos
-                .Any(a => a.StatusAtendimento.Equals("Ativo", StringComparison.OrdinalIgnoreCase));
-
-            if (possuiAtendimentoAtivo)
-                throw new DomainException("Não é possível remover um paciente com atendimento 'Ativo'. Finalize o atendimento antes de excluir.");
+            if (entidadeExistente.Atendimentos.Any())
+                throw new DomainException("Não é possível remover um paciente que possui atendimentos registrados.");
 
             _pacienteRepository.Remover(id);
         }
