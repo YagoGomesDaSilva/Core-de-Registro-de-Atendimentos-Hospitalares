@@ -1,12 +1,10 @@
--- Criação da Base de Dados
-CREATE DATABASE HospitalDB;
-
---DROP TABLE Pacientes
---DROP TABLE Atendimentos
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'HospitalDB')
+BEGIN
+    CREATE DATABASE HospitalDB;
+END
 
 USE HospitalDB;
 
--- Criação da Tabela de Pacientes
 CREATE TABLE Paciente (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Nome VARCHAR(150) NOT NULL,
@@ -15,7 +13,6 @@ CREATE TABLE Paciente (
     DataRegisto DATETIME DEFAULT GETDATE()
 );
 
--- Criação da Tabela de Atendimento
 CREATE TABLE Atendimento (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     PacienteId INT NOT NULL,
@@ -27,9 +24,8 @@ CREATE TABLE Atendimento (
     CONSTRAINT FK_Atendimento_Paciente FOREIGN KEY (PacienteId) REFERENCES Paciente(Id)
 );
 
--- Inserção de Dados Fictícios para Teste
 INSERT INTO Paciente (Nome, Cpf, DataNascimento) 
-VALUES ('João Silva', '12345678901', '1985-04-12');
+VALUES ('JoÃ£o Silva', '12345678901', '1985-04-12');
 
 INSERT INTO Paciente (Nome, Cpf, DataNascimento) 
 VALUES ('Maria Santos', '10987654321', '1990-08-25');

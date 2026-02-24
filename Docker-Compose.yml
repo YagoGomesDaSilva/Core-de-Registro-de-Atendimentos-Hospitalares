@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db_sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    build: .
     container_name: hospital_db
     environment:
       ACCEPT_EULA: "Y"

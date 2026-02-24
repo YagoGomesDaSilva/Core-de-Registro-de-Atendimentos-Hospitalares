@@ -1,9 +1,10 @@
 <Solution>
   <Folder Name="/Itens de Solução/">
     <File Path="Docker-Compose.yml" />
+    <File Path="dockerfile" />
   </Folder>
   <Folder Name="/Itens de Solução/SQL/">
-    <File Path="script.sql" />
+    <File Path="init.sql" />
   </Folder>
   <Project Path="Application/Application.csproj" Id="1f2d3b69-8d8a-4a97-a2b4-fa0f57f3cc85" />
   <Project Path="CrossCutting/CrossCutting.csproj" Id="07ddd064-1321-4880-8e31-30189c2003b2" />
