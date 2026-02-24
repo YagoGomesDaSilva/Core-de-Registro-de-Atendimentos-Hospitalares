@@ -39,7 +39,7 @@
             <div class="col-md-4">
                 <div class="form-group mb-3">
                     @Html.LabelFor(model => model.PressaoArterial, "Pressão Arterial", htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.PressaoArterial, new { htmlAttributes = new { @class = "form-control", placeholder = "Ex: 120/80" } })
+                    @Html.EditorFor(model => model.PressaoArterial, new { htmlAttributes = new { @class = "form-control", placeholder = "Ex: 120/80", id = "PressaoArterial" } })
                 </div>
             </div>
             <div class="col-md-4">
@@ -47,16 +47,16 @@
                     @Html.LabelFor(model => model.Temperatura, "Temperatura (°C)", htmlAttributes: new { @class = "control-label" })
                     @Html.TextBoxFor(model => model.Temperatura,
                         Model.Temperatura.HasValue
-                            ? Model.Temperatura.Value.ToString(System.Globalization.CultureInfo.CurrentCulture)
+                            ? Model.Temperatura.Value.ToString("00.00", System.Globalization.CultureInfo.CurrentCulture)
                             : null,
-                        new { @class = "form-control", type = "text", placeholder = "Ex: 36,5" })
+                        new { @class = "form-control", type = "text", placeholder = "Ex: 36,50", id = "Temperatura", maxlength = "5" })
                     @Html.ValidationMessageFor(model => model.Temperatura, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group mb-3">
                     @Html.LabelFor(model => model.FrequenciaCardiaca, "Freq. Cardíaca (BPM)", htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.FrequenciaCardiaca, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                    @Html.EditorFor(model => model.FrequenciaCardiaca, new { htmlAttributes = new { @class = "form-control", type = "text", id = "FrequenciaCardiaca" } })
                 </div>
             </div>
         </div>
@@ -69,3 +69,23 @@
         </div>
     </div>
 }
+
+<script>
+    document.getElementById('PressaoArterial').addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9\/]/g, '');
+    });
+
+    document.getElementById('Temperatura').addEventListener('input', function () {
+        var digits = this.value.replace(/[^0-9]/g, '');
+        digits = digits.substring(0, 4);
+        if (digits.length > 2) {
+            this.value = digits.substring(0, 2) + ',' + digits.substring(2);
+        } else {
+            this.value = digits;
+        }
+    });
+
+    document.getElementById('FrequenciaCardiaca').addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
