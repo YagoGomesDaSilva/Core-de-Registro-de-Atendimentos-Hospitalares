@@ -24,7 +24,6 @@ namespace Infrastructure.Context
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            // Configuração explícita das tabelas
             modelBuilder.Configurations.Add(new PacienteMap());
             modelBuilder.Configurations.Add(new AtendimentoMap());
 

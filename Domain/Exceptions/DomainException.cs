@@ -1,10 +1,7 @@
-﻿using System;
-namespace Domain.Exceptions 
+﻿namespace Domain.Exceptions 
 {
-    public class DomainException : System.Exception // Especifica o tipo Exception totalmente qualificado
+    public class DomainException : System.Exception
     {
-        public DomainException(string message) : base(message)
-        {
-        }
+        public DomainException(string message) : base(message) { }
     }
 }

@@ -5,13 +5,7 @@ using AutoMapper;
 using Domain.Interfaces;
 using Infrastructure.Context;
 using Infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CrossCutting.DependenciesApp
 {
